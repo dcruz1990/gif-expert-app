@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { getGifs } from "../helpers/getGifs";
+import { useFetchGifs } from "../hooks/useFetchGifs";
 import { GifGridItem } from "./GifGridItem";
 
 type gridProps = {
@@ -7,25 +6,16 @@ type gridProps = {
 };
 
 export const GifGrid = ({ category }: gridProps) => {
-  const [images, setImages] = useState<
-    {
-      id: string;
-      url: string;
-      title: string;
-    }[]
-  >();
-  // onMounted de Vue
-  useEffect(() => {
-    getGifs(category).then((data) => {
-      setImages(data);
-    });
-  }, [category]);
+  const { data: images, loading } = useFetchGifs(category) || {};
+
+  console.log(images);
 
   return (
     <div>
       <h3>{category}</h3>
+      {loading && <p className="animate__animated animate__bounce">Loading</p>}
 
-      <div className="cardContainer">
+      <div className="cardContainer animate__animated animate__tada ">
         {images?.map((image) => {
           return (
             <GifGridItem key={image.id} url={image.url} title={image.title} />
